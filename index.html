@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZJ Design Lab - Product Description Generator</title>
-<!--    <style>-->
-<!--        /* Add to your existing styles */-->
-<!--        select, input, textarea {-->
-<!--            @apply dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100;-->
-<!--        }-->
+    <style>
+        /* Add to your existing styles */
+        select, input, textarea {
+            @apply dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100;
+        }
 
-<!--        select option {-->
-<!--            @apply dark:bg-gray-700 dark:text-gray-100;-->
-<!--        }-->
+        select option {
+            @apply dark:bg-gray-700 dark:text-gray-100;
+        }
 
-<!--        .suggestion-item {-->
-<!--            @apply dark:hover:bg-gray-600 dark:text-gray-100;-->
-<!--        }-->
+        .suggestion-item {
+            @apply dark:hover:bg-gray-600 dark:text-gray-100;
+        }
 
-<!--        #output {-->
-<!--            @apply dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100;-->
-<!--        }-->
-<!--    </style>-->
+        #output {
+            @apply dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100;
+        }
+    </style>
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('darkMode') === 'true' ||
@@ -82,13 +82,13 @@
             <!-- Product Name -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
-                <input type="text" id="productName" placeholder="e.g., Fantasy Helmet Robot" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input type="text" id="productName" placeholder="e.g., Fantasy Helmet Robot" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
             </div>
 
             <!-- Short Description -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
-                <input type="text" id="shortDesc" placeholder="e.g., Cinematic sci-fi helmet with glowing LED display" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input type="text" id="shortDesc" placeholder="e.g., Cinematic sci-fi helmet with glowing LED display" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
             </div>
 
             <!-- What's Included -->
@@ -102,8 +102,8 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Required Plugins</label>
                 <div id="pluginTags" class="flex flex-wrap gap-2 mb-2"></div>
                 <div class="relative">
-                    <input type="text" id="pluginInput" placeholder="Type to add plugin, press Enter to add..." 
-                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <input type="text" id="pluginInput" placeholder="Type to add plugin, press Enter to add..."
+                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
                     <div id="pluginSuggestions" class="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 hidden"></div>
                 </div>
             </div>
@@ -125,19 +125,19 @@
             <!-- File Size -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">File Size</label>
-                <input type="text" id="fileSize" placeholder="File Size (e.g., 104 MB)" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input type="text" id="fileSize" placeholder="File Size (e.g., 104 MB)" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
             </div>
 
             <!-- Generate Button -->
-            <button onclick="generateDescription()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <button onclick="generateDescription()" class="w-full bg-blue-600 dark:bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Generate Description
             </button>
 
             <!-- Output Section -->
             <div class="relative">
-                <div id="output" class="whitespace-pre-wrap bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px]"></div>
+                <div id="output" class="whitespace-pre-wrap bg-gray-50 dark:bg-gray-800 p-4 rounded-md border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-200 min-h-[200px]"></div>
                 <button id="copyButton" onclick="copyToClipboard()"
-                        class="absolute top-2 right-2 inline-flex items-center px-3 py-1 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 transition-all duration-200">
+                        class="absolute top-2 right-2 inline-flex items-center px-3 py-1 rounded-md text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-200 transition-all duration-200">
                     <span id="copyText">Copy</span>
                     <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -192,7 +192,7 @@
                 <label class="flex items-center space-x-2">
                     <input type="checkbox" id="${item.id}" ${item.defaultChecked ? 'checked' : ''} 
                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <span class="text-sm text-gray-700">${item.label}</span>
+                    <span class="text-sm text-gray-700 dark:text-gray-400">${item.label}</span>
                 </label>
             `).join('');
         }
@@ -215,14 +215,32 @@
             rendererSelect.value = CONFIG.software[software].defaultRenderer;
         }
 
+        // Make selectedPlugins and updatePluginTags global to the script
+        let selectedPlugins = new Set();
+
+        function updatePluginTags() {
+            const tags = document.getElementById('pluginTags');
+            tags.innerHTML = Array.from(selectedPlugins)
+                .map(plugin => `
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-gray-200 cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-600">
+                ${plugin}
+                <button type="button" class="ml-1 inline-flex text-blue-400 hover:text-blue-600 dark:text-blue-300 dark:hover:text-blue-100" onclick="removePlugin('${plugin}')">
+                    ×
+                </button>
+            </span>
+        `).join('');
+        }
+
+        function removePlugin(plugin) {
+            selectedPlugins.delete(plugin);
+            updatePluginTags();
+        }
+
         function setupPluginInput() {
             const input = document.getElementById('pluginInput');
             const suggestions = document.getElementById('pluginSuggestions');
-            const tags = document.getElementById('pluginTags');
-            let selectedPlugins = new Set();
-            let selectedTagIndex = -1;
 
-            function createPluginTag(plugin) {
+            function addPlugin(plugin) {
                 if (!selectedPlugins.has(plugin)) {
                     selectedPlugins.add(plugin);
                     updatePluginTags();
@@ -232,7 +250,7 @@
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && input.value.trim()) {
                     e.preventDefault();
-                    createPluginTag(input.value.trim());
+                    addPlugin(input.value.trim());
                     input.value = '';
                     suggestions.style.display = 'none';
                 } else if (e.key === 'Backspace' && input.value === '' && selectedPlugins.size > 0) {
@@ -242,6 +260,7 @@
                 }
             });
 
+            // Rest of your existing setupPluginInput code...
             input.addEventListener('input', () => {
                 const value = input.value.toLowerCase();
                 if (!value) {
@@ -249,47 +268,28 @@
                     return;
                 }
 
-                const matches = CONFIG.commonPlugins.filter(plugin => 
-                    plugin.toLowerCase().includes(value) && 
+                const matches = CONFIG.commonPlugins.filter(plugin =>
+                    plugin.toLowerCase().includes(value) &&
                     !selectedPlugins.has(plugin)
                 );
 
                 suggestions.innerHTML = matches
                     .map(plugin => `
-                        <div class="suggestion-item p-2 hover:bg-gray-100 cursor-pointer">
-                            ${plugin}
-                        </div>
-                    `).join('');
+                <div class="suggestion-item p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer dark:text-gray-200 dark:bg-gray-700 dark: boarder-gray-800">
+                    ${plugin}
+                </div>
+            `).join('');
                 suggestions.style.display = matches.length ? 'block' : 'none';
             });
 
             suggestions.addEventListener('click', (e) => {
                 if (e.target.classList.contains('suggestion-item')) {
                     const plugin = e.target.textContent.trim();
-                    createPluginTag(plugin);
+                    addPlugin(plugin);
                     input.value = '';
                     suggestions.style.display = 'none';
                 }
             });
-
-            function updatePluginTags() {
-                tags.innerHTML = Array.from(selectedPlugins)
-                    .map(plugin => `
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800">
-                            ${plugin}
-                            <button type="button" class="ml-1 inline-flex text-blue-400 hover:text-blue-600 dark:text-blue-300 dark:hover:text-blue-100" onclick="removePlugin('${plugin}')">
-                                ×
-                            </button>
-                        </span>
-                    `).join('');
-            }
-        }
-
-        function removePlugin(plugin) {
-            const selectedPlugins = new Set(Array.from(document.querySelectorAll('.plugin-tag'))
-                .map(tag => tag.textContent.trim().slice(0, -2)));
-            selectedPlugins.delete(plugin);
-            updatePluginTags();
         }
 
         function generateDescription() {
