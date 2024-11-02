@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZJ Design Lab - Product Description Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Product Description Generator</h1>
+        
+        <div class="space-y-6 bg-white p-6 rounded-lg shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Software Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Software</label>
+                    <select id="software" onchange="updateSoftwareOptions()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="C4D">Cinema 4D</option>
+                        <option value="Blender">Blender</option>
+                    </select>
+                </div>
+
+                <!-- Product Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Product Type</label>
+                    <select id="productType" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="scene">Complete Scene</option>
+                        <option value="model">Single Model</option>
+                        <option value="tutorial">Tutorial Source File</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Product Name -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                <input type="text" id="productName" placeholder="e.g., Fantasy Helmet Robot" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <!-- Short Description -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+                <input type="text" id="shortDesc" placeholder="e.g., Cinematic sci-fi helmet with glowing LED display" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <!-- What's Included -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">What's Included</label>
+                <div id="includedItems" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- Required Plugins -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Required Plugins</label>
+                <div id="pluginTags" class="flex flex-wrap gap-2 mb-2"></div>
+                <div class="relative">
+                    <input type="text" id="pluginInput" placeholder="Type to add plugin, press Enter to add..." 
+                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div id="pluginSuggestions" class="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 hidden"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Software Version -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Software Version</label>
+                    <select id="softwareVersion" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></select>
+                </div>
+
+                <!-- Renderer -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Renderer</label>
+                    <select id="renderer" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></select>
+                </div>
+            </div>
+
+            <!-- File Size -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">File Size</label>
+                <input type="text" id="fileSize" placeholder="File Size (e.g., 104 MB)" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <!-- Generate Button -->
+            <button onclick="generateDescription()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Generate Description
+            </button>
+
+            <!-- Output -->
+            <div id="output" class="whitespace-pre-wrap bg-gray-50 p-4 rounded-md border border-gray-200 min-h-[200px]"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration object
+        const CONFIG = {
+            software: {
+                C4D: {
+                    versions: ['R25+', '2023+', '2024+', '2025+'],
+                    defaultVersion: 'R25+',
+                    renderers: ['Octane 2022+', 'Octane 2024+', 'Redshift 3.6+', 'Redshift 4.0+', 'Redshift 2025+'],
+                    defaultRenderer: 'Octane 2022+'
+                },
+                Blender: {
+                    versions: ['3.2+', '3.6+', '4.0+', '4.1+'],
+                    defaultVersion: '3.6+',
+                    renderers: ['Cycles', 'EEVEE'],
+                    defaultRenderer: 'Cycles'
+                }
+            },
+            includedItems: [
+                { id: 'sceneSetup', label: 'Complete Scene Setup', defaultChecked: true },
+                { id: 'materials', label: 'Materials & Textures', defaultChecked: true },
+                { id: 'lighting', label: 'Lighting Setup', defaultChecked: true },
+                { id: 'animations', label: 'Animations', defaultChecked: false },
+                { id: 'hdri', label: 'HDRI Environment', defaultChecked: true },
+                { id: 'renderSettings', label: 'Render Settings', defaultChecked: true },
+                { id: 'cameraSetup', label: 'Camera Setup', defaultChecked: true }
+            ],
+            commonPlugins: ['Forester', 'X-Particles', 'TurbulenceFD', 'RealFlow']
+        };
+
+        // Initialize the form
+        function initForm() {
+            populateIncludedItems();
+            updateSoftwareOptions();
+            setupPluginInput();
+        }
+
+        function populateIncludedItems() {
+            const container = document.getElementById('includedItems');
+            container.innerHTML = CONFIG.includedItems.map(item => `
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" id="${item.id}" ${item.defaultChecked ? 'checked' : ''} 
+                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-700">${item.label}</span>
+                </label>
+            `).join('');
+        }
+
+        function updateSoftwareOptions() {
+            const software = document.getElementById('software').value;
+            const versionSelect = document.getElementById('softwareVersion');
+            const rendererSelect = document.getElementById('renderer');
+
+            // Update versions
+            versionSelect.innerHTML = CONFIG.software[software].versions
+                .map(version => `<option value="${version}">${version}</option>`)
+                .join('');
+            versionSelect.value = CONFIG.software[software].defaultVersion;
+
+            // Update renderers
+            rendererSelect.innerHTML = CONFIG.software[software].renderers
+                .map(renderer => `<option value="${renderer}">${renderer}</option>`)
+                .join('');
+            rendererSelect.value = CONFIG.software[software].defaultRenderer;
+        }
+
+        function setupPluginInput() {
+            const input = document.getElementById('pluginInput');
+            const suggestions = document.getElementById('pluginSuggestions');
+            const tags = document.getElementById('pluginTags');
+            let selectedPlugins = new Set();
+            let selectedTagIndex = -1;
+
+            function createPluginTag(plugin) {
+                if (!selectedPlugins.has(plugin)) {
+                    selectedPlugins.add(plugin);
+                    updatePluginTags();
+                }
+            }
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && input.value.trim()) {
+                    e.preventDefault();
+                    createPluginTag(input.value.trim());
+                    input.value = '';
+                    suggestions.style.display = 'none';
+                } else if (e.key === 'Backspace' && input.value === '' && selectedPlugins.size > 0) {
+                    const pluginsArray = Array.from(selectedPlugins);
+                    selectedPlugins.delete(pluginsArray[pluginsArray.length - 1]);
+                    updatePluginTags();
+                }
+            });
+
+            input.addEventListener('input', () => {
+                const value = input.value.toLowerCase();
+                if (!value) {
+                    suggestions.style.display = 'none';
+                    return;
+                }
+
+                const matches = CONFIG.commonPlugins.filter(plugin => 
+                    plugin.toLowerCase().includes(value) && 
+                    !selectedPlugins.has(plugin)
+                );
+
+                suggestions.innerHTML = matches
+                    .map(plugin => `
+                        <div class="suggestion-item p-2 hover:bg-gray-100 cursor-pointer">
+                            ${plugin}
+                        </div>
+                    `).join('');
+                suggestions.style.display = matches.length ? 'block' : 'none';
+            });
+
+            suggestions.addEventListener('click', (e) => {
+                if (e.target.classList.contains('suggestion-item')) {
+                    const plugin = e.target.textContent.trim();
+                    createPluginTag(plugin);
+                    input.value = '';
+                    suggestions.style.display = 'none';
+                }
+            });
+
+            function updatePluginTags() {
+                tags.innerHTML = Array.from(selectedPlugins)
+                    .map(plugin => `
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200">
+                            ${plugin}
+                            <button type="button" class="ml-1 inline-flex text-blue-400 hover:text-blue-600" onclick="removePlugin('${plugin}')">
+                                ×
+                            </button>
+                        </span>
+                    `).join('');
+            }
+        }
+
+        function removePlugin(plugin) {
+            const selectedPlugins = new Set(Array.from(document.querySelectorAll('.plugin-tag'))
+                .map(tag => tag.textContent.trim().slice(0, -2)));
+            selectedPlugins.delete(plugin);
+            updatePluginTags();
+        }
+
+        function generateDescription() {
+            const software = document.getElementById('software').value;
+            const productName = document.getElementById('productName').value;
+            const shortDesc = document.getElementById('shortDesc').value;
+            const productType = document.getElementById('productType').value;
+            const renderer = document.getElementById('renderer').value;
+            
+            let formattedName = '';
+            if (productType === 'tutorial') {
+                formattedName = `${software} Tutorial - ${productName} | Source Files`;
+            } else {
+                formattedName = `${software}+${renderer.split(' ')[0]} | ${productType === 'scene' ? 'Scene' : 'Model'} - ${productName}`;
+            }
+
+            let included = `📦 What's Included:\n`;
+            CONFIG.includedItems.forEach(item => {
+                const isChecked = document.getElementById(item.id).checked;
+                included += `${isChecked ? '✅' : '❌'} ${item.label}\n`;
+            });
+
+            const pluginTags = Array.from(document.querySelectorAll('.plugin-tag'))
+                .map(tag => tag.textContent.trim().slice(0, -2));
+
+            const description = `${formattedName}
+
+✨ Overview
+${shortDesc}
+
+${included}
+
+🔌 Required Plugins:
+${pluginTags.length ? pluginTags.join(', ') : 'None'}
+
+⚙️ Technical Requirements:
+• ${software}: ${document.getElementById('softwareVersion').value}
+• Renderer: ${renderer}
+• File Size: ${document.getElementById('fileSize').value}
+
+⚠️ Please Note:
+• Non-refundable digital product`;
+
+            document.getElementById('output').textContent = description;
+        }
+
+        // Initialize form when page loads
+        window.onload = initForm;
+    </script>
+</body>
+</html>
